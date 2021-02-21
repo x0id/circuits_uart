@@ -491,10 +491,8 @@ defmodule Circuits.UART do
   end
 
   def handle_call({:write, data, timeout}, _from, state) do
-    bin_data = IO.iodata_to_binary(data)
-
     {:ok, framed_data, new_framing_state} =
-      state.framing.add_framing(bin_data, state.framing_state)
+      state.framing.add_framing(data, state.framing_state)
 
     response = call_port(state, :write, {framed_data, timeout}, port_timeout(timeout))
     new_state = %{state | framing_state: new_framing_state}
